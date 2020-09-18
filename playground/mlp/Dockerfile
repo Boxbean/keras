@@ -5,6 +5,6 @@ RUN mkdir /workspace
 WORKDIR /workspace
 COPY . /workspace
 
-RUN pip install keras
+RUN pip install keras numpy pillow
 
-CMD python3 mnist_mlp.py
+CMD python3 mnist_mlp_v1.py
