@@ -7,4 +7,4 @@ COPY . /workspace
 
 RUN pip install keras numpy pillow
 
-CMD python3 mnist_mlp_v2.py
+CMD python3 mnist_mlp_v3.py
