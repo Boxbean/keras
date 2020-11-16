@@ -9,7 +9,7 @@ from __future__ import print_function
 
 import keras
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageOps
 from keras.datasets import mnist
 from keras.models import Sequential, load_model
 from keras.layers import Dense, Dropout
@@ -19,19 +19,30 @@ from keras.preprocessing import image
 print('Loading model...')
 model = keras.models.load_model('models')
 
-source = Image.open('./images/2.png', 'r')
-source = source.convert('L')
-source = source.resize((28, 28))
-source.show(command='fim')
-print(source)
-
 img_width, img_height = 28, 28
+
+source = Image.open('./images/0_2.png').convert('L').resize((img_width, img_height), 0)
+source = ImageOps.invert(source)
+# pil_image = Image.fromarray(color_coverted)
+# pil_image = pil_image.convert('L')
+# pil_image = pil_image.resize((28, 28))
+
 # test_image = image.load_img('./images/5.png', color_mode='grayscale', target_size=(img_width, img_height))
+
 test_image = image.img_to_array(source)
-test_image = np.expand_dims(test_image, axis=0)
-test_image = test_image.reshape(1, img_width * img_height)
-test_image = 255 - test_image
 test_image = test_image.astype('float32')
+test_image = test_image.reshape(28, 28)
+test_image = 255 - test_image
 test_image /= 255
+test_image = test_image.reshape(1, img_width * img_height)
+print(test_image)
+
+# test_image = image.img_to_array(source)
+# test_image = np.expand_dims(test_image, axis=0)
+# test_image = test_image.reshape(1, img_width * img_height)
+# test_image = 255 - test_image
+# test_image = test_image.astype('float32')
+# test_image /= 255
+# print(test_image)
 result = model.predict(test_image, batch_size=1)
 print(np.argmax(result))
