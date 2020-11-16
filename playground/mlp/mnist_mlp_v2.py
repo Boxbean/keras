@@ -9,15 +9,16 @@ from __future__ import print_function
 
 import keras
 import numpy as np
+import matplotlib.pyplot as plt
 from keras.datasets import mnist
-from keras.models import Sequential, load_model
+from keras.models import Sequential
 from keras.layers import Dense, Dropout
 from keras.optimizers import RMSprop
 from keras.preprocessing import image
 
 batch_size = 128
 num_classes = 10
-epochs = 2
+epochs = 10
 
 # the data, split between train and test sets
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
@@ -54,16 +55,27 @@ history = model.fit(x_train, y_train,
                     epochs=epochs,
                     verbose=1,
                     validation_data=(x_test, y_test))
-print('saving model...')
-model.save('models')
 score = model.evaluate(x_test, y_test, verbose=0)
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
 
+print('saving model...')
+model.save('models')
+
+test = x_test[100].reshape(28, 28)
+plt.imshow(test)
+test = x_test[100].reshape(1, 784)
+result = model.predict(test)
+print(y_test[100])
+print(np.argmax(result))
+
 img_width, img_height = 28, 28
-test_image = image.load_img('./images/2_small.png', color_mode='grayscale', target_size=(img_width, img_height))
+test_image = image.load_img('./images/2.png', color_mode="grayscale", target_size=(img_width, img_height))
 test_image = image.img_to_array(test_image)
-test_image = np.expand_dims(test_image, axis=0)
+test_image = test_image.astype('float32')
+test_image = test_image.reshape(28, 28)
+test_image = 255 - test_image
+test_image /= 255
 test_image = test_image.reshape(1, img_width * img_height)
 result = model.predict(test_image, batch_size=1)
-print(result)
+print(np.argmax(result))
